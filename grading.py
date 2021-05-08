@@ -80,7 +80,7 @@ class inputObj(object):
         self.grade_sort_total = csvhandler(
             filename, headers=self.raw_data.headers + self.raw_data.headers[3:])
         self.grade_sort_total.output_data = dcopy(self.temp.output_data[2:])
-        print(self.grade_sort_total.output_data)
+        # print(self.grade_sort_total.output_data)
         self.grade_sort_total.output_data.sort(
             key=lambda x: x[-1], reverse=True)
         c = 1
@@ -120,20 +120,35 @@ class inputObj(object):
 
     def make_grades(self):
         size = len(self.grade_sort_total.output_data)
+        # print(self.grade_sort_total.output_data)
+        print(size)
         c = 0
-        d = 0
+        d = 0  # 1.45
         self.count = [0, 0, 0, 0, 0, 0, 0]
         self.grades = {}
         for i in range(2, size):
-            if c == (int(self.iapc[d][1]) * size) // 100:
-                d += 1
-                c = 0
+            try:
+                if c == (int(self.iapc[d][1]) * size) // 100:
+                    d += 1
+                    c = 0
+            except:
+                pass
 
-            self.grade_sort_total.output_data[i].append(self.iapc[d][0])
-            self.grades[self.grade_sort_total.output_data[i]
-                        [1]] = self.iapc[d][0]
-            c += 1
-            self.count[d] += 1
+            print(i)
+            print(self.grade_sort_total.output_data[i])
+            try:
+                self.grade_sort_total.output_data[i].append(self.iapc[d][0])
+                self.grades[self.grade_sort_total.output_data[i]
+                            [1]] = self.iapc[d][0]
+                c += 1
+                self.count[d] += 1
+            except:
+                self.grade_sort_total.output_data[i].append(
+                    self.iapc[d - 1][0])
+                self.grades[self.grade_sort_total.output_data[i]
+                            [1]] = self.iapc[d - 1][0]
+                c += 1
+                self.count[d - 1] += 1
 
         # print(self.count)
         # print(self.grades)
@@ -161,6 +176,14 @@ class inputObj(object):
 
 if __name__ == "__main__":
     root_dir = pwd()
+
+    # input_folder = str(input(
+    #     "Enter the name of the input folder (Press enter to use default folder): "))
+    # if input_folder == None:
+    #     open_dir("inputs")
+    # else:
+    #     open_dir(input_folder)
+
     open_dir("inputs")
 
     iapc = csvhandler("iapc.csv")
